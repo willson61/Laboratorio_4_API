@@ -21,6 +21,20 @@ router.get('/', (req, res, next) => {
 
 });
 
+/* GET specific pizza */
+router.get('/Todas', (req, res, next) => {
+    mongoClient.connect(url, {useNewUrlParser: true}, (err, client) =>{
+        if(err) return next(createError(500))
+        const database = client.db(dbName)
+        const collection = database.collection('Pizzas')
+        collection.find({}).toArray((err,docs) => {
+            if(err) return next(createError(500))
+            res.status(200).json(docs);
+        })
+    })
+
+});
+
 /* PUT update pizza*/
 router.put('/', (req, res, next) =>{
     mongoClient.connect(url, {useNewUrlParser: true}, (err, client)=> {
@@ -56,7 +70,6 @@ router.delete('/', (req, res, next) => {
         const collection = database.collection('Pizzas')
         collection.deleteOne({"nombre" : req.query.nombre}, function(err, client) {
             if (err) throw err;
-            //console.log("1 document deleted")
             res.status(200).end()
         })
     })
